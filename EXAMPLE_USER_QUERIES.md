@@ -516,6 +516,60 @@ Backend (Node.js + TypeScript):
 
 ---
 
+## Example 9: Local AI-Glue Automation Service
+
+### User Query
+
+> "Build a local service that orchestrates several model-provider APIs and a vector store, exposes a small HTTP endpoint, persists events to SQLite, and is easy to extend with new modules week over week. Correctness and iteration speed matter more than raw throughput."
+
+### Goal Analysis
+
+| Aspect | Assessment |
+|--------|-----------|
+| **What it is** | Internal integration/automation service tying model APIs + a vector store together |
+| **Core requirements** | Call multiple model-provider SDKs, query a vector store, expose a small HTTP API, persist events to SQLite, easy weekly extension |
+| **Hidden requirements** | Retry/backoff on provider calls; structured logging; config via env; schema validation on inbound payloads; graceful degradation when a provider is down |
+| **Performance sensitivity** | Low — correctness and iteration speed dominate; throughput is explicitly deprioritized |
+| **Deployment target** | Local/server process, run as a long-lived service |
+| **Ecosystem needs** | Model-provider SDKs, vector-store client, typed HTTP framework, lightweight persistence |
+
+### Query Logic Analysis
+
+| Criterion | Rust | TypeScript | Julia | C++ | Python | Weight |
+|-----------|------|------------|-------|-----|--------|--------|
+| AI/ML SDK ecosystem | 5 | 8 | 4 | 3 | **10** | 25% |
+| Iteration speed / weekly extensibility | 6 | 8 | 6 | 3 | **10** | 20% |
+| Backend / HTTP ecosystem | 7 | **10** | 4 | 4 | 8 | 15% |
+| Vector-store / data libraries | 5 | 7 | 5 | 3 | **10** | 15% |
+| Type safety where wanted | 9 | 9 | 5 | 6 | 7 | 10% |
+| SQLite / persistence ergonomics | 7 | 8 | 6 | 5 | **9** | 10% |
+| Raw throughput (deprioritized) | **10** | 6 | 7 | **10** | 4 | 5% |
+| **Weighted Score** | 6.4 | 8.2 | 5.0 | 4.0 | **9.0** | 100% |
+
+### Language Recommendation
+
+**Python** — The model-provider SDKs and vector-store clients land in Python first, and the goal explicitly values iteration speed over throughput. `FastAPI` gives a typed, async HTTP layer; `pydantic` validates inbound payloads; `httpx` handles provider calls with retries; the stdlib `sqlite3` (or `sqlite-vec`) covers persistence. Type hints + `mypy` keep the dynamic codebase safe as it grows weekly. **TypeScript** is the runner-up and the better pick if this service must share a codebase with a TypeScript frontend.
+
+### Architecture Sketch
+
+```
+[FastAPI app]
+  ├── POST /ingest ──► pydantic-validated payload ──► event to SQLite
+  ├── POST /query  ──► embed ──► vector-store search ──► model call ──► response
+  └── GET  /health ──► provider + store status
+         │
+  ┌──────┴───────────────────────────────┐
+  │ [Provider Clients] httpx + retry/backoff (model APIs)
+  │ [Vector Store]     chromadb / sqlite-vec client
+  │ [Persistence]      sqlite3 (events, append-only)
+  │ [Modules]          drop-in handlers, registered at startup
+  └──────────────────────────────────────┘
+```
+
+**Key packages:** `fastapi`, `uvicorn`, `httpx`, `pydantic`, `chromadb` (or `sqlite-vec`), `pytest`
+
+---
+
 ## Decision Summary
 
 | # | Request Type | Recommended Language | Key Differentiator |
@@ -528,13 +582,15 @@ Backend (Node.js + TypeScript):
 | 6 | Browser AI inference demo | **TypeScript** | Only browser-native option |
 | 7 | Systems monitoring daemon | **Rust** | Long-running safety, tokio async |
 | 8 | Matrix computation library | **Julia** | LinearAlgebra stdlib, GPU extensibility |
+| 9 | Local AI-glue automation service | **Python** | AI SDK ecosystem + iteration speed |
 
 ### Language Selection Heuristics
 
 | If the request involves... | Default to... | Consider alternative if... |
 |---------------------------|---------------|---------------------------|
+| AI/ML integration, automation, data pipelines, prototyping | **Python** | Hard real-time or throughput limits (→ Rust) |
 | Systems programming, CLI tools, embedded | **Rust** | Legacy codebase is C++ |
 | Web apps, APIs, browser, visualization | **TypeScript** | Extreme performance needed (→ Rust) |
-| Numerical computing, ML, simulation | **Julia** | Production deployment constraints (→ Python) |
+| Numerical computing, scientific simulation, HPC | **Julia** | AI/ML glue or deployment ease (→ Python) |
 | Game engines, real-time graphics, HPC | **C++** | Safety is paramount (→ Rust) |
 | Bare-metal embedded, no_std | **Rust** | Existing C codebase (→ C/C++) |

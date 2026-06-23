@@ -48,7 +48,8 @@ State the implementation language. Use these decision rules:
 | Web services, type-safe full-stack, Node.js ecosystem | TypeScript |
 | Scientific computing, numerical analysis, data processing | Julia |
 | Game engines, embedded systems, low-level performance | C++ |
-| Simple scripts, one-off automation | Python or shell |
+| AI/ML integration, automation, data pipelines, rapid prototyping, backend glue | Python |
+| Trivial one-liners / shell-native tasks | shell |
 | Existing codebase | Match the existing language |
 
 If multiple languages could work, state the tradeoffs and recommend one. **Do not proceed until a language is selected.**
@@ -262,3 +263,4 @@ After the universal prompt above, append the language-specific prompt for your c
 - TypeScript: `PROMPT_TYPESCRIPT.md`
 - Julia: `PROMPT_JULIA.md`
 - C++: `PROMPT_CPP.md`
+- Python: `PROMPT_PYTHON.md`

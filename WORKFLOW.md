@@ -177,7 +177,7 @@ The request type is unambiguously classified. Every constraint is documented. Th
 ### Step 3: Decide Which Language is Best Suited
 
 **Description:**  
-Score each of the 4 supported languages across 14+ dimensions relevant to this specific goal. Apply weights based on the goal's requirements. Recommend exactly one language. If a language override exists in config, apply it and document why.
+Score each of the 5 supported languages across 14+ dimensions relevant to this specific goal. Apply weights based on the goal's requirements. Recommend exactly one language. If a language override exists in config, apply it and document why.
 
 **Agent Responsible:** Query Logic Agent
 
@@ -189,7 +189,7 @@ Score each of the 4 supported languages across 14+ dimensions relevant to this s
 - `.claude-swarm-config.md` language overrides
 
 **Output:**
-- 14x4 scoring matrix
+- 14x5 scoring matrix
 - Weight assignments with justification
 - Weighted totals per language
 - Single language recommendation (High/Medium/Low confidence)
@@ -298,7 +298,7 @@ Produce the complete, polished first implementation. All files from the architec
 - Example code
 
 **What "Done" Looks Like:**  
-`cargo test` / `npm test` / `julia test/runtests.jl` / `make test` runs and shows test results. The code does what the goal describes. A new developer can clone and run.
+`cargo test` / `npm test` / `julia test/runtests.jl` / `pytest` / `make test` runs and shows test results. The code does what the goal describes. A new developer can clone and run.
 
 ---
 
