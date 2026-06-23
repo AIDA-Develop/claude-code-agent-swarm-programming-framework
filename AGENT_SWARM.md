@@ -68,10 +68,10 @@ ID: `query-logic`
 ### Responsibilities
 
 - Analyze the goal across 14 evaluation dimensions
-- Score each of the 4 languages (Rust, TypeScript, Julia, C++) per dimension
+- Score each of the 5 languages (Rust, TypeScript, Julia, C++, Python) per dimension
 - Apply weighted scoring based on the goal's specific needs
 - Recommend exactly one language
-- Explain why the other 3 languages are rejected
+- Explain why the other 4 languages are rejected
 
 ### Evaluation Dimensions
 
@@ -87,7 +87,7 @@ ID: `query-logic`
 10. Ecosystem for AI apps
 11. Production maintainability
 12. Hardware-level control
-13. Learning curve (for team context)
+13. Learning ease (for team context)
 14. Error tolerance
 15. Security risk
 16. Testing burden
@@ -101,7 +101,7 @@ ID: `query-logic`
 
 ### Output
 
-1. **Scoring Matrix:** Full 14x4 table with scores
+1. **Scoring Matrix:** Full 14x5 table with scores
 2. **Weight Assignment:** Which dimensions were weighted higher and why
 3. **Weighted Totals:** Final score for each language
 4. **Recommendation:** One language with confidence level (High/Medium/Low)
@@ -109,7 +109,7 @@ ID: `query-logic`
 
 ### Success Criteria
 
-- The scoring matrix is complete (all 14 dimensions x 4 languages)
+- The scoring matrix is complete (all 14 dimensions x 5 languages)
 - Weights are justified by the specific goal, not generic
 - The recommendation is unambiguous (one language, not a tie)
 - Rejection rationales are specific to this goal, not generic
@@ -218,7 +218,7 @@ ID: `language-specialist`
 
 ### Overview
 
-This agent has 4 sub-specialists, one per supported language. Only the specialist matching the recommended language is activated.
+This agent has 5 sub-specialists, one per supported language. Only the specialist matching the recommended language is activated.
 
 The Language Specialist Agent enforces idiomatic, best-practice code specific to the selected language. It reviews the architect's design before coding begins and audits the sandbox code during implementation.
 
@@ -359,6 +359,36 @@ The Language Specialist Agent enforces idiomatic, best-practice code specific to
 - Implicit conversions (mark constructors `explicit`)
 - Exception-unaware code in exception-safe contexts
 - ODR violations
+
+---
+
+#### Sub-Specialist E: Python Specialist (`python-specialist`)
+
+**Enforcement Rules:**
+
+- Type hints on all public functions; `mypy --strict` must pass
+- Modern typing syntax (`list[int]`, `X | None`) over legacy `List`/`Optional`
+- An explicit exception hierarchy — raise specific errors, never bare `Exception`
+- No bare `except:` and no silently-swallowed exceptions; preserve cause chains with `raise ... from`
+- `@dataclass` (internal) or `pydantic.BaseModel` (validated boundary) for structured data — never bare dicts
+- `pathlib.Path` for filesystem paths; `enum.Enum` for fixed value sets
+- `ruff` for lint + format (single tool), `pytest` for tests
+- src layout with a `pyproject.toml` as the single source of truth
+- No mutable default arguments; no import-time side effects
+- Concurrency model matched to the work: `asyncio`/threads for I/O, `multiprocessing` for CPU (GIL)
+- `subprocess` with an argument list and `shell=False`; never build shell strings
+- Secrets from env/secret manager; `.env` in `.gitignore`
+- `secrets` (not `random`) for security; `argon2`/`bcrypt` for password hashing
+- `logging` for structured logs, not `print`
+
+**Anti-Patterns to Reject:**
+- `eval`/`exec`/`pickle.loads` on untrusted input
+- Mutable default arguments (`def f(x=[])`)
+- Bare `except:` or `except Exception: pass`
+- Bare `dict` for structured data instead of dataclasses/pydantic
+- `any`-typed boundaries / missing type hints at module edges
+- Threads for CPU-bound parallelism (GIL serializes them)
+- `from module import *`
 
 ---
 

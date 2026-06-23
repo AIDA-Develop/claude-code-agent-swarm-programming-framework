@@ -19,30 +19,35 @@ Base scores for each language across 14 categories. Scores are on a qualitative 
 - **Very High** = 4 points
 - **High** = 3 points
 - **Medium** = 2 points
+- **Low-Medium** = 1.5 points
 - **Low** = 1 point
 - **Very Low** = 0 points
 
+Every category is scored so that **higher is better for the project**. (Note that
+"Learning ease" means *ease* of learning — higher = easier to pick up — and
+"Security risk" is scored as safety — higher = safer.)
+
 ```
-Category                         Rust   TypeScript   Julia   C++
----------------------------------------------------------------
-Raw performance                  High   Medium       High    Very High
-Memory safety                    Very   High         Medium  Low-Medium
+Category                         Rust   TypeScript   Julia   C++          Python
+-----------------------------------------------------------------------------------
+Raw performance                  High   Medium       High    Very High    Low
+Memory safety                    Very   High         Medium  Low-Medium   Medium
                                  High
-Ease of development              Medium High         High    Low-Medium
-AI app integration               Medium Very High    Medium  Medium
-Numerical computing              Medium Medium       Very    High
+Ease of development              Medium High         High    Low-Medium   Very High
+AI app integration               Medium Very High    Medium  Medium       Very High
+Numerical computing              Medium Medium       Very    High         High
                                                           High
-Web/frontend support             Low    Very High    Low     Low
-Backend API support              High   Very High    Medium  High
-Systems programming              Very   Low          Medium  Very High
+Web/frontend support             Low    Very High    Low     Low          Low
+Backend API support              High   Very High    Medium  High         High
+Systems programming              Very   Low          Medium  Very High    Low
                                  High
-Concurrency                      Very   High         Medium  High
+Concurrency                      Very   High         Medium  High         Low-Medium
                                  High
-Ecosystem for AI apps            Medium Very High    Medium  Medium
-Production maintainability       Very   High         Medium  Medium
+Ecosystem for AI apps            Medium Very High    Medium  Medium       Very High
+Production maintainability       Very   High         Medium  Medium       Medium
                                  High
-Hardware-level control           High   Low          Medium  Very High
-Learning curve                   High   Low-Medium   Medium  Very High
+Hardware-level control           High   Low          Medium  Very High    Low
+Learning ease                    Low    High         Medium  Very Low     Very High
 ```
 
 ### Numerical Mapping
@@ -83,7 +88,7 @@ Total the weighted scores per language. The highest score wins.
 If scores are within 10% of each other:
 1. Prefer the language with the higher score on critical-weighted categories
 2. Prefer the language with better production maintainability
-3. Prefer the language with lower learning curve (team velocity)
+3. Prefer the language with higher learning ease (team velocity)
 4. If still tied, recommend the language the user is most likely to know
 
 ### Step 5: Document Rejection
@@ -100,9 +105,10 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
     // Step 1: Map qualitative scores to numerical
     scores = {
         Rust:        [3, 4, 2, 2, 2, 1, 3, 4, 4, 2, 4, 3, 1, 3],
-        TypeScript:  [2, 2, 3, 4, 2, 4, 4, 1, 3, 4, 3, 1, 2, 2],
+        TypeScript:  [2, 2, 3, 4, 2, 4, 4, 1, 3, 4, 3, 1, 3, 2],
         Julia:       [3, 2, 3, 2, 4, 1, 2, 2, 2, 2, 2, 2, 2, 1],
-        C++:         [4, 1, 1, 2, 3, 1, 3, 4, 3, 2, 2, 4, 4, 2]
+        C++:         [4, 1, 1, 2, 3, 1, 3, 4, 3, 2, 2, 4, 0, 2],
+        Python:      [1, 2, 4, 4, 3, 1, 3, 1, 1.5, 4, 2, 1, 4, 2]
     }
 
     categories = [
@@ -110,7 +116,7 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
         "AI app integration", "Numerical computing", "Web/frontend support",
         "Backend API support", "Systems programming", "Concurrency",
         "Ecosystem for AI apps", "Production maintainability",
-        "Hardware-level control", "Learning curve", "Security risk"
+        "Hardware-level control", "Learning ease", "Security risk"
     ]
 
     // Step 2: Assign weights based on goal
@@ -118,7 +124,7 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 
     // Step 3: Calculate weighted scores
     totals = {}
-    FOR each language IN [Rust, TypeScript, Julia, C++]:
+    FOR each language IN [Rust, TypeScript, Julia, C++, Python]:
         totals[language] = 0
         FOR i = 0 to 13:
             totals[language] += scores[language][i] * weights[i]
@@ -138,7 +144,7 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 
     // Step 6: Generate rejection rationales
     rejections = {}
-    FOR each language IN [Rust, TypeScript, Julia, C++]:
+    FOR each language IN [Rust, TypeScript, Julia, C++, Python]:
         IF language != winner:
             rejections[language] = ExplainRejection(language, winner, goal)
 
@@ -167,19 +173,19 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - Standard: Ease of development, Backend API support
 - Irrelevant: Web/frontend support, Numerical computing, AI app integration
 
-| Category | Weight | Rust | TypeScript | Julia | C++ |
-|----------|--------|------|------------|-------|-----|
-| Raw performance | 3x | 3*3=9 | 2*3=6 | 3*3=9 | 4*3=12 |
-| Memory safety | 3x | 4*3=12 | 2*3=6 | 2*3=6 | 1*3=3 |
-| Concurrency | 3x | 4*3=12 | 3*3=9 | 2*3=6 | 3*3=9 |
-| Systems programming | 2x | 4*2=8 | 1*2=2 | 2*2=4 | 4*2=8 |
-| Production maintainability | 2x | 4*2=8 | 3*2=6 | 2*2=4 | 2*2=4 |
-| Backend API support | 1x | 3*1=3 | 4*1=4 | 2*1=2 | 3*1=3 |
-| Ease of development | 1x | 2*1=2 | 3*1=3 | 3*1=3 | 1*1=1 |
-| Hardware-level control | 1x | 3*1=3 | 1*1=1 | 2*1=2 | 4*1=4 |
-| (others: 0x) | 0 | — | — | — | — |
+| Category | Weight | Rust | TypeScript | Julia | C++ | Python |
+|----------|--------|------|------------|-------|-----|--------|
+| Raw performance | 3x | 3*3=9 | 2*3=6 | 3*3=9 | 4*3=12 | 1*3=3 |
+| Memory safety | 3x | 4*3=12 | 2*3=6 | 2*3=6 | 1*3=3 | 2*3=6 |
+| Concurrency | 3x | 4*3=12 | 3*3=9 | 2*3=6 | 3*3=9 | 1.5*3=4.5 |
+| Systems programming | 2x | 4*2=8 | 1*2=2 | 2*2=4 | 4*2=8 | 1*2=2 |
+| Production maintainability | 2x | 4*2=8 | 3*2=6 | 2*2=4 | 2*2=4 | 2*2=4 |
+| Backend API support | 1x | 3*1=3 | 4*1=4 | 2*1=2 | 3*1=3 | 3*1=3 |
+| Ease of development | 1x | 2*1=2 | 3*1=3 | 3*1=3 | 1*1=1 | 4*1=4 |
+| Hardware-level control | 1x | 3*1=3 | 1*1=1 | 2*1=2 | 4*1=4 | 1*1=1 |
+| (others: 0x) | 0 | — | — | — | — | — |
 
-**Totals:** Rust: 57, C++: 44, TypeScript: 37, Julia: 36
+**Totals:** Rust: 57, C++: 44, TypeScript: 37, Julia: 36, Python: 27.5
 
 **Recommendation:** Rust (High confidence)
 
@@ -187,6 +193,7 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - TypeScript: GC pauses and single-threaded event loop cannot guarantee sub-millisecond latency at 100k connections
 - Julia: JIT compilation and GC make it unsuitable for low-latency network services
 - C++: Lacks memory safety guarantees; manual memory management at this scale is error-prone
+- Python: GIL and interpreter overhead cannot meet sub-millisecond latency at 100k concurrent connections
 
 ---
 
@@ -201,19 +208,19 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - Standard: Numerical computing, Production maintainability
 - Irrelevant: Hardware-level control, Systems programming, Raw performance
 
-| Category | Weight | Rust | TypeScript | Julia | C++ |
-|----------|--------|------|------------|-------|-----|
-| AI app integration | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 |
-| Ecosystem for AI apps | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 |
-| Web/frontend support | 3x | 1*3=3 | 4*3=12 | 1*3=3 | 1*3=3 |
-| Backend API support | 2x | 3*2=6 | 4*2=8 | 2*2=4 | 3*2=6 |
-| Ease of development | 2x | 2*2=4 | 3*2=6 | 3*2=6 | 1*2=2 |
-| Numerical computing | 1x | 2*1=2 | 2*1=2 | 4*1=4 | 3*1=3 |
-| Production maintainability | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 2*1=2 |
-| Memory safety | 1x | 4*1=4 | 2*1=2 | 2*1=2 | 1*1=1 |
-| (others: 0x) | 0 | — | — | — | — |
+| Category | Weight | Rust | TypeScript | Julia | C++ | Python |
+|----------|--------|------|------------|-------|-----|--------|
+| AI app integration | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 | 4*3=12 |
+| Ecosystem for AI apps | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 | 4*3=12 |
+| Web/frontend support | 3x | 1*3=3 | 4*3=12 | 1*3=3 | 1*3=3 | 1*3=3 |
+| Backend API support | 2x | 3*2=6 | 4*2=8 | 2*2=4 | 3*2=6 | 3*2=6 |
+| Ease of development | 2x | 2*2=4 | 3*2=6 | 3*2=6 | 1*2=2 | 4*2=8 |
+| Numerical computing | 1x | 2*1=2 | 2*1=2 | 4*1=4 | 3*1=3 | 3*1=3 |
+| Production maintainability | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 2*1=2 | 2*1=2 |
+| Memory safety | 1x | 4*1=4 | 2*1=2 | 2*1=2 | 1*1=1 | 2*1=2 |
+| (others: 0x) | 0 | — | — | — | — | — |
 
-**Totals:** TypeScript: 57, Julia: 33, Rust: 35, C++: 29
+**Totals:** TypeScript: 57, Python: 48, Rust: 35, Julia: 33, C++: 29
 
 **Recommendation:** TypeScript (High confidence)
 
@@ -221,6 +228,7 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - Rust: Web/frontend ecosystem is immature; AI/ML integration requires FFI bindings
 - Julia: No mature web frontend framework; web deployment ecosystem is limited
 - C++: No built-in web framework; AI integration requires complex binding code
+- Python: Strong on the ML half and a clear runner-up, but has no native frontend story; the interactive charts would need a separate JS/TS layer
 
 ---
 
@@ -235,17 +243,16 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - Standard: Memory safety
 - Irrelevant: Web/frontend support, AI app integration, Backend API support, Systems programming, Hardware-level control
 
-| Category | Weight | Rust | TypeScript | Julia | C++ |
-|----------|--------|------|------------|-------|-----|
-| Numerical computing | 3x | 2*3=6 | 2*3=6 | 4*3=12 | 3*3=9 |
-| Ease of development | 3x | 2*3=6 | 3*3=9 | 3*3=9 | 1*3=3 |
-| Raw performance | 2x | 3*2=6 | 2*2=4 | 3*2=6 | 4*2=8 |
-| Production maintainability | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 2*1=2 |
-| Memory safety | 1x | 4*1=4 | 2*1=2 | 2*1=2 | 1*1=1 |
-| Concurrency | 0x | — | — | — | — |
-| (others: 0x) | 0 | — | — | — | — |
+| Category | Weight | Rust | TypeScript | Julia | C++ | Python |
+|----------|--------|------|------------|-------|-----|--------|
+| Numerical computing | 3x | 2*3=6 | 2*3=6 | 4*3=12 | 3*3=9 | 3*3=9 |
+| Ease of development | 3x | 2*3=6 | 3*3=9 | 3*3=9 | 1*3=3 | 4*3=12 |
+| Raw performance | 2x | 3*2=6 | 2*2=4 | 3*2=6 | 4*2=8 | 1*2=2 |
+| Production maintainability | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 2*1=2 | 2*1=2 |
+| Memory safety | 1x | 4*1=4 | 2*1=2 | 2*1=2 | 1*1=1 | 2*1=2 |
+| (others: 0x) | 0 | — | — | — | — | — |
 
-**Totals:** Julia: 31, TypeScript: 24, C++: 23, Rust: 26
+**Totals:** Julia: 31, Python: 27, Rust: 26, TypeScript: 24, C++: 23
 
 **Recommendation:** Julia (Medium confidence)
 
@@ -253,6 +260,7 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - TypeScript: Not designed for numerical computing; would require calling out to C/Fortran
 - C++: Correctness is harder to guarantee; development speed is slower
 - Rust: Numerical ecosystem is growing but not as mature as Julia's
+- Python: numpy/scipy can do it and ease-of-development scores high, but Julia's multiple dispatch and JIT give better performance on stiff systems with sparse Jacobians
 
 ---
 
@@ -265,19 +273,19 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - Critical: Hardware-level control, Raw performance, Memory safety
 - Important: Systems programming, Concurrency
 - Standard: Production maintainability
-- Irrelevant: Web/frontend, AI app integration, Backend API support, Numerical computing, Ease of development, Learning curve
+- Irrelevant: Web/frontend, AI app integration, Backend API support, Numerical computing, Ease of development, Learning ease
 
-| Category | Weight | Rust | TypeScript | Julia | C++ |
-|----------|--------|------|------------|-------|-----|
-| Hardware-level control | 3x | 3*3=9 | 1*3=3 | 2*3=6 | 4*3=12 |
-| Raw performance | 3x | 3*3=9 | 2*3=6 | 3*3=9 | 4*3=12 |
-| Memory safety | 3x | 4*3=12 | 2*3=6 | 2*3=6 | 1*3=3 |
-| Systems programming | 2x | 4*2=8 | 1*2=2 | 2*2=4 | 4*2=8 |
-| Concurrency | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 3*1=3 |
-| Production maintainability | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 2*1=2 |
-| (others: 0x) | 0 | — | — | — | — |
+| Category | Weight | Rust | TypeScript | Julia | C++ | Python |
+|----------|--------|------|------------|-------|-----|--------|
+| Hardware-level control | 3x | 3*3=9 | 1*3=3 | 2*3=6 | 4*3=12 | 1*3=3 |
+| Raw performance | 3x | 3*3=9 | 2*3=6 | 3*3=9 | 4*3=12 | 1*3=3 |
+| Memory safety | 3x | 4*3=12 | 2*3=6 | 2*3=6 | 1*3=3 | 2*3=6 |
+| Systems programming | 2x | 4*2=8 | 1*2=2 | 2*2=4 | 4*2=8 | 1*2=2 |
+| Concurrency | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 3*1=3 | 1.5*1=1.5 |
+| Production maintainability | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 2*1=2 | 2*1=2 |
+| (others: 0x) | 0 | — | — | — | — | — |
 
-**Totals:** C++: 40, Rust: 46, TypeScript: 23, Julia: 29
+**Totals:** Rust: 46, C++: 40, Julia: 29, TypeScript: 23, Python: 17.5
 
 **Recommendation:** Rust (Medium confidence)
 
@@ -285,6 +293,7 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - TypeScript: Cannot run on bare metal; requires runtime and GC
 - Julia: JIT compilation and GC make it unsuitable for hard real-time constraints
 - C++: Strong contender but manual memory safety is risky for safety-critical motor control
+- Python: Cannot run on bare metal; requires an interpreter and runtime
 
 **Note:** If the team has no Rust embedded experience, C++ may be the practical choice despite the lower score. See override rules in [LANGUAGE_DECISION_MATRIX.md](LANGUAGE_DECISION_MATRIX.md).
 
@@ -301,26 +310,27 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - Standard: Memory safety, Ease of development
 - Irrelevant: Web/frontend support, Numerical computing (inference, not training), Hardware-level control
 
-| Category | Weight | Rust | TypeScript | Julia | C++ |
-|----------|--------|------|------------|-------|-----|
-| AI app integration | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 |
-| Ecosystem for AI apps | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 |
-| Backend API support | 3x | 3*3=9 | 4*3=12 | 2*3=6 | 3*3=9 |
-| Concurrency | 2x | 4*2=8 | 3*2=6 | 2*2=4 | 3*2=6 |
-| Raw performance | 2x | 3*2=6 | 2*2=4 | 3*2=6 | 4*2=8 |
-| Production maintainability | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 2*1=2 |
-| Memory safety | 1x | 4*1=4 | 2*1=2 | 2*1=2 | 1*1=1 |
-| Ease of development | 1x | 2*1=2 | 3*1=3 | 3*1=3 | 1*1=1 |
-| (others: 0x) | 0 | — | — | — | — |
+| Category | Weight | Rust | TypeScript | Julia | C++ | Python |
+|----------|--------|------|------------|-------|-----|--------|
+| AI app integration | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 | 4*3=12 |
+| Ecosystem for AI apps | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 | 4*3=12 |
+| Backend API support | 3x | 3*3=9 | 4*3=12 | 2*3=6 | 3*3=9 | 3*3=9 |
+| Concurrency | 2x | 4*2=8 | 3*2=6 | 2*2=4 | 3*2=6 | 1.5*2=3 |
+| Raw performance | 2x | 3*2=6 | 2*2=4 | 3*2=6 | 4*2=8 | 1*2=2 |
+| Production maintainability | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 2*1=2 | 2*1=2 |
+| Memory safety | 1x | 4*1=4 | 2*1=2 | 2*1=2 | 1*1=1 | 2*1=2 |
+| Ease of development | 1x | 2*1=2 | 3*1=3 | 3*1=3 | 1*1=1 | 4*1=4 |
+| (others: 0x) | 0 | — | — | — | — | — |
 
-**Totals:** TypeScript: 54, Rust: 45, C++: 39, Julia: 35
+**Totals:** TypeScript: 54, Python: 46, Rust: 45, C++: 39, Julia: 35
 
-**Recommendation:** TypeScript (Medium-High confidence)
+**Recommendation:** TypeScript (Medium confidence)
 
 **Rejections:**
 - Rust: HuggingFace ecosystem is primarily Python/JS; would need ONNX runtime bindings
 - C++: gRPC + ML inference is possible but development velocity is slower
 - Julia: Limited gRPC and containerization ecosystem; inference-focused deployment is immature
+- Python: A very close runner-up — the natural language for the model layer; loses here only on concurrency/latency for the gRPC hot path, and is a valid override when the model SDKs are Python (see override rules)
 
 ---
 
@@ -335,18 +345,17 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - Standard: Concurrency
 - Irrelevant: Web/frontend, AI app integration, Numerical computing, Hardware-level control
 
-| Category | Weight | Rust | TypeScript | Julia | C++ |
-|----------|--------|------|------------|-------|-----|
-| Raw performance | 3x | 3*3=9 | 2*3=6 | 3*3=9 | 4*3=12 |
-| Memory safety | 3x | 4*3=12 | 2*3=6 | 2*3=6 | 1*3=3 |
-| Production maintainability | 2x | 4*2=8 | 3*2=6 | 2*2=4 | 2*2=4 |
-| Ease of development | 2x | 2*2=4 | 3*2=6 | 3*2=6 | 1*2=2 |
-| Systems programming | 1x | 4*1=4 | 1*1=1 | 2*1=2 | 4*1=4 |
-| Concurrency | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 3*1=3 |
-| Backend API support | 0x | — | — | — | — |
-| (others: 0x) | 0 | — | — | — | — |
+| Category | Weight | Rust | TypeScript | Julia | C++ | Python |
+|----------|--------|------|------------|-------|-----|--------|
+| Raw performance | 3x | 3*3=9 | 2*3=6 | 3*3=9 | 4*3=12 | 1*3=3 |
+| Memory safety | 3x | 4*3=12 | 2*3=6 | 2*3=6 | 1*3=3 | 2*3=6 |
+| Production maintainability | 2x | 4*2=8 | 3*2=6 | 2*2=4 | 2*2=4 | 2*2=4 |
+| Ease of development | 2x | 2*2=4 | 3*2=6 | 3*2=6 | 1*2=2 | 4*2=8 |
+| Systems programming | 1x | 4*1=4 | 1*1=1 | 2*1=2 | 4*1=4 | 1*1=1 |
+| Concurrency | 1x | 4*1=4 | 3*1=3 | 2*1=2 | 3*1=3 | 1.5*1=1.5 |
+| (others: 0x) | 0 | — | — | — | — | — |
 
-**Totals:** Rust: 41, TypeScript: 28, C++: 28, Julia: 29
+**Totals:** Rust: 41, Julia: 29, TypeScript: 28, C++: 28, Python: 23.5
 
 **Recommendation:** Rust (High confidence)
 
@@ -354,6 +363,39 @@ FUNCTION SelectLanguage(goal, requestType, requirements):
 - TypeScript: Node.js memory limits and slower string processing for 10GB+ files
 - Julia: Not designed for CLI text processing; startup time is slow
 - C++: String processing is error-prone without memory safety; cross-platform build is harder
+- Python: Workable and easy to write, but interpreter speed and startup make it slower than Rust for 10GB+ files
+
+---
+
+### Example 7: Local AI-Glue Automation Service
+
+**Goal:** "Build a local service that ties together several model APIs and a vector store, exposes a small HTTP endpoint, persists events to SQLite, and is easy to extend with new modules week over week. Correctness and iteration speed matter more than raw throughput."
+
+**Analysis:**
+- Request type: AI/ML Integration + Backend Service (internal)
+- Critical: AI app integration, Ecosystem for AI apps, Ease of development
+- Important: Backend API support, Production maintainability
+- Standard: Memory safety
+- Irrelevant: Web/frontend support, Systems programming, Hardware-level control, Raw performance
+
+| Category | Weight | Rust | TypeScript | Julia | C++ | Python |
+|----------|--------|------|------------|-------|-----|--------|
+| AI app integration | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 | 4*3=12 |
+| Ecosystem for AI apps | 3x | 2*3=6 | 4*3=12 | 2*3=6 | 2*3=6 | 4*3=12 |
+| Ease of development | 3x | 2*3=6 | 3*3=9 | 3*3=9 | 1*3=3 | 4*3=12 |
+| Backend API support | 2x | 3*2=6 | 4*2=8 | 2*2=4 | 3*2=6 | 3*2=6 |
+| Production maintainability | 2x | 4*2=8 | 3*2=6 | 2*2=4 | 2*2=4 | 2*2=4 |
+| Memory safety | 1x | 4*1=4 | 2*1=2 | 2*1=2 | 1*1=1 | 2*1=2 |
+| (others: 0x) | 0 | — | — | — | — | — |
+
+**Totals:** TypeScript: 49, Python: 48, Rust: 36, Julia: 31, C++: 26
+
+**Recommendation:** TypeScript and Python are within 10% — apply tiebreakers. Python ties TypeScript on the two critical AI categories and beats it on ease of development; the tiebreaker favors **Python (Low confidence over TypeScript)** when the surrounding system and model SDKs are Python. Choose TypeScript instead if the service must share a codebase with a TypeScript frontend.
+
+**Rejections:**
+- Rust: AI/ML SDK ecosystem is thin; iteration speed is slower for week-over-week extension
+- Julia: Smaller library ecosystem for general API/service glue
+- C++: Development velocity is poor for this kind of integration-heavy, fast-changing service
 
 ---
 
@@ -372,6 +414,7 @@ Confidence: [High/Medium/Low]
 | 2nd      | [score]       | [diff] |
 | 3rd      | [score]       | [diff] |
 | 4th      | [score]       | [diff] |
+| 5th      | [score]       | [diff] |
 
 ### What You Gain
 [3-5 bullet points: what this language gives you for this specific goal]
@@ -401,8 +444,8 @@ Confidence: [High/Medium/Low]
 | Ecosystem for AI apps | Libraries and tools for AI-powered apps | "Are there mature libraries for what I'm building?" |
 | Production maintainability | Long-term code health and team scaling | "Will this be maintained for years?" |
 | Hardware-level control | Direct memory, register, or device access | "Do I need to control hardware directly?" |
-| Learning curve | Time for a new developer to be productive | "Does the team already know this language?" |
-| Security risk | Likelihood of security vulnerabilities | "Is this exposed to untrusted input or networks?" |
+| Learning ease | How quickly a new developer becomes productive (higher = easier) | "Can the team pick this up fast?" |
+| Security risk | Resistance to security vulnerabilities (higher = safer) | "Is this exposed to untrusted input or networks?" |
 
 ---
 

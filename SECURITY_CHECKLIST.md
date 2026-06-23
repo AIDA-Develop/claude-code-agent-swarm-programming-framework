@@ -71,6 +71,7 @@ WHEN receiving [input type]:
 | **TypeScript** | `npm audit` or `yarn audit` |
 | **Julia** | `Pkg.status()` + manual registry verification |
 | **C++** | Manual review; Conan/vcpkg checksum verification |
+| **Python** | `pip-audit` (or `safety check`) |
 
 ---
 
@@ -213,6 +214,7 @@ unsafe { ptr::write(ptr.add(index), value) };
 | **TypeScript** | Node.js `crypto` module, `libsodium-wrappers` |
 | **Julia** | `MbedTLS.jl`, `SHA.jl` (stdlib) |
 | **C++** | OpenSSL (careful), `libsodium`, Botan |
+| **Python** | `cryptography`, `hashlib` (stdlib), `argon2-cffi`, `secrets` (stdlib) |
 
 ---
 
@@ -272,6 +274,21 @@ unsafe { ptr::write(ptr.add(index), value) };
 | 9.4.8 | FORTIFY_SOURCE enabled (`-D_FORTIFY_SOURCE=2`) | [ ] |
 | 9.4.9 | No raw `new`/`delete` (use `std::make_unique`/`make_shared`) | [ ] |
 | 9.4.10 | No `strcpy`, `strcat`, `sprintf` (use `strncpy`, `snprintf`, or `std::string`) | [ ] |
+
+### 9.5 Python Security Checklist
+
+| # | Check Item | Status |
+|---|-----------|--------|
+| 9.5.1 | `pip-audit` passes with no high/critical vulnerabilities | [ ] |
+| 9.5.2 | No `eval()`, `exec()`, or `compile()` on dynamic/user input | [ ] |
+| 9.5.3 | No `pickle.loads` / `yaml.load` (use `yaml.safe_load`) on untrusted data | [ ] |
+| 9.5.4 | `subprocess` calls use an argument list with `shell=False` | [ ] |
+| 9.5.5 | File paths from user input are resolved and checked against an allow-list base | [ ] |
+| 9.5.6 | Secrets loaded from env/secret manager; `.env` is in `.gitignore` | [ ] |
+| 9.5.7 | Passwords hashed with `argon2`/`bcrypt` (never plain `hashlib.sha256`) | [ ] |
+| 9.5.8 | Randomness for security uses `secrets`, not `random` | [ ] |
+| 9.5.9 | Dependencies pinned with a committed lockfile | [ ] |
+| 9.5.10 | No SQL built by string concatenation (parameterized queries only) | [ ] |
 
 ---
 
@@ -356,3 +373,7 @@ ___________________________________________________________
 | `let token = "hardcoded_secret_123"` | Secret in code | Load from env var or secrets manager |
 | `innerHTML = userContent` | XSS | Use `textContent` or sanitize with DOMPurify |
 | `unsafe { *ptr }` without bounds check | Use-after-free / segfault | Check bounds; use safe abstractions |
+| `yaml.load(untrusted)` (Python) | Arbitrary object construction | `yaml.safe_load` |
+| `pickle.loads(untrusted)` (Python) | Arbitrary code execution | `json.loads` |
+| `subprocess.run(cmd, shell=True)` with user input | Command injection | Argument list, `shell=False` |
+| `random.random()` for tokens (Python) | Predictable randomness | `secrets.token_hex()` |

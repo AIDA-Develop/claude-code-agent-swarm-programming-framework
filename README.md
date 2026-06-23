@@ -1,6 +1,6 @@
 # Claude Code Agent Swarm Programming Framework
 
-> A strict, repeatable, multi-agent workflow for AI-assisted programming. Claude Code writes, tests, reviews, optimizes, and finalizes production-ready code across Rust, TypeScript, Julia, and C++.
+> A strict, repeatable, multi-agent workflow for AI-assisted programming. Claude Code writes, tests, reviews, optimizes, and finalizes production-ready code across Rust, TypeScript, Julia, C++, and Python.
 
 ---
 
@@ -8,12 +8,12 @@
 
 This framework is a **repeatable, copy-paste workflow** designed for Claude Code. It treats AI-assisted programming as a structured engineering process: a swarm of specialized agent roles collaborate to turn your goal into tested, reviewed, optimized code.
 
-No guesswork. No "write once and hope." Every piece of code passes through **13 lifecycle steps**, **11 specialized agent roles**, and **4 supported languages** before it reaches you.
+No guesswork. No "write once and hope." Every piece of code passes through **13 lifecycle steps**, **11 specialized agent roles**, and **5 supported languages** before it reaches you.
 
 ### What This Framework Does
 
 1. You describe your goal in plain English
-2. The **Query Logic Agent** selects the optimal language from Rust, TypeScript, Julia, or C++
+2. The **Query Logic Agent** selects the optimal language from Rust, TypeScript, Julia, C++, or Python
 3. A **Planner Agent** breaks the work into phases, files, and tests
 4. An **Architect Agent** designs the structure and patterns
 5. A **Language Specialist Agent** enforces idiomatic, best-practice code
@@ -24,7 +24,7 @@ No guesswork. No "write once and hope." Every piece of code passes through **13 
 10. An **Optimization Agent** improves correctness, safety, performance, and readability
 11. A **Final Review Agent** acts as the last gate before delivery
 
-### The 4 Supported Languages
+### The 5 Supported Languages
 
 | Language | Best For |
 |----------|----------|
@@ -32,6 +32,7 @@ No guesswork. No "write once and hope." Every piece of code passes through **13 
 | **TypeScript** | Web apps, backend APIs, AI integrations, full-stack development |
 | **Julia** | Numerical computing, data analysis, scientific computing, AI/ML inference |
 | **C++** | Hardware-level control, embedded systems, game engines, extreme performance |
+| **Python** | AI/ML integration, automation, data pipelines, rapid prototyping, backend glue |
 
 ---
 
@@ -62,6 +63,8 @@ Tell Claude what you want to build. Be specific. Examples:
 > "Build a Julia script that runs linear regression on a CSV dataset and plots results."
 
 > "Write a C++ header-only library for lock-free concurrent queues."
+
+> "Build a Python service that ingests CSV data, validates it with pydantic, and exposes a FastAPI endpoint with tests."
 
 ### 5. Let the Swarm Work
 
@@ -107,11 +110,13 @@ claude-code-agent-swarm-programming-framework/
 ├── BEST_PRACTICES_TYPESCRIPT.md        # TypeScript best practices reference
 ├── BEST_PRACTICES_JULIA.md             # Julia best practices reference
 ├── BEST_PRACTICES_CPP.md               # C++ best practices reference
+├── BEST_PRACTICES_PYTHON.md            # Python best practices reference
 ├── PROMPT_UNIVERSAL.md                 # Copy-paste universal prompt for Claude Code
 ├── PROMPT_RUST.md                      # Rust-specific prompt override
 ├── PROMPT_TYPESCRIPT.md                # TypeScript-specific prompt override
 ├── PROMPT_JULIA.md                     # Julia-specific prompt override
 ├── PROMPT_CPP.md                       # C++-specific prompt override
+├── PROMPT_PYTHON.md                    # Python-specific prompt override
 ├── REVIEW_CHECKLIST.md                 # Best practices review checklist
 ├── TESTING_CHECKLIST.md                # Testing checklist
 ├── SECURITY_CHECKLIST.md               # Security checklist
@@ -152,6 +157,7 @@ claude-code-agent-swarm-programming-framework/
 | `BEST_PRACTICES_TYPESCRIPT.md` | TypeScript config, code style, testing, ESLint/Prettier setup, and a minimal example |
 | `BEST_PRACTICES_JULIA.md` | Julia type stability, multiple dispatch, testing, benchmarking, and a minimal example |
 | `BEST_PRACTICES_CPP.md` | C++ RAII, smart pointers, CMake setup, sanitizer builds, and a minimal example |
+| `BEST_PRACTICES_PYTHON.md` | Python type hints, src layout, ruff/mypy/pytest tooling, common mistakes, and a minimal example |
 
 ### Prompt Files
 
@@ -162,6 +168,7 @@ claude-code-agent-swarm-programming-framework/
 | `PROMPT_TYPESCRIPT.md` | Override/additions when the selected language is TypeScript |
 | `PROMPT_JULIA.md` | Override/additions when the selected language is Julia |
 | `PROMPT_CPP.md` | Override/additions when the selected language is C++ |
+| `PROMPT_PYTHON.md` | Override/additions when the selected language is Python |
 
 ### Checklists and Templates
 
@@ -172,7 +179,7 @@ claude-code-agent-swarm-programming-framework/
 | `SECURITY_CHECKLIST.md` | Security risk classification and per-language vulnerability checklist |
 | `OPTIMIZATION_CHECKLIST.md` | Five-tier optimization priority order and anti-patterns to avoid |
 | `FINAL_OUTPUT_TEMPLATE.md` | 14-section delivery template used by the Final Review Agent |
-| `EXAMPLE_USER_QUERIES.md` | 8 worked example goals covering all 4 languages and request types |
+| `EXAMPLE_USER_QUERIES.md` | 8 worked example goals covering the supported languages and request types |
 
 ### Examples Directory
 
@@ -214,10 +221,10 @@ See [WORKFLOW.md](WORKFLOW.md) for the full specification of each step.
 | # | Agent | What It Does |
 |---|-------|-------------|
 | 1 | **Goal Analyst** | Restates goals, finds hidden requirements, classifies request type, produces acceptance checklist |
-| 2 | **Query Logic** | Analyzes runtime, performance, safety, concurrency needs; selects the best language from the 4 options |
+| 2 | **Query Logic** | Analyzes runtime, performance, safety, concurrency needs; selects the best language from the 5 options |
 | 3 | **Planner** | Converts the goal into a step-by-step plan with phases, milestones, files, tests, and completion criteria |
 | 4 | **Architect** | Designs project structure, patterns, libraries, separation of concerns, error handling, testing strategy |
-| 5 | **Language Specialist** | Enforces idiomatic code for the selected language (with 4 sub-specialists for Rust, TS, Julia, C++) |
+| 5 | **Language Specialist** | Enforces idiomatic code for the selected language (with 5 sub-specialists for Rust, TS, Julia, C++, Python) |
 | 6 | **Sandbox Coding** | Writes the first working version — minimal, complete, runnable, with tests from the start |
 | 7 | **Test Agent** | Writes and runs happy path, edge case, invalid input, regression, and performance tests |
 | 8 | **Best Practices Review** | Scores code 1-10 on language best practices, security, maintainability, performance, naming, structure |

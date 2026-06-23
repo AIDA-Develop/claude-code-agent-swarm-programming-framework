@@ -8,27 +8,27 @@ Quick-reference guide for selecting the optimal language. Use this for fast deci
 
 ### Base Scores
 
-| Category | Rust | TypeScript | Julia | C++ |
-|----------|------|------------|-------|-----|
-| Raw performance | High | Medium | High | Very High |
-| Memory safety | Very High | Medium | High | Low-Medium |
-| Ease of development | Medium | High | High | Low-Medium |
-| AI app integration | Medium | Very High | Medium | Medium |
-| Numerical computing | Medium | Medium | Very High | High |
-| Web/frontend support | Low | Very High | Low | Low |
-| Backend API support | High | Very High | Medium | High |
-| Systems programming | Very High | Low | Medium | Very High |
-| Concurrency | Very High | High | Medium | High |
-| Ecosystem for AI apps | Medium | Very High | Medium | Medium |
-| Production maintainability | Very High | High | Medium | Medium |
-| Hardware-level control | High | Low | Medium | Very High |
-| Learning curve | High | Low-Medium | Medium | Very High |
+| Category | Rust | TypeScript | Julia | C++ | Python |
+|----------|------|------------|-------|-----|--------|
+| Raw performance | High | Medium | High | Very High | Low |
+| Memory safety | Very High | Medium | High | Low-Medium | Medium |
+| Ease of development | Medium | High | High | Low-Medium | Very High |
+| AI app integration | Medium | Very High | Medium | Medium | Very High |
+| Numerical computing | Medium | Medium | Very High | High | High |
+| Web/frontend support | Low | Very High | Low | Low | Low |
+| Backend API support | High | Very High | Medium | High | High |
+| Systems programming | Very High | Low | Medium | Very High | Low |
+| Concurrency | Very High | High | Medium | High | Low-Medium |
+| Ecosystem for AI apps | Medium | Very High | Medium | Medium | Very High |
+| Production maintainability | Very High | High | Medium | Medium | Medium |
+| Hardware-level control | High | Low | Medium | Very High | Low |
+| Learning ease | Low | High | Medium | Very Low | Very High |
 
 ### Point Values
 
-| | Very High | High | Medium | Low-Medium | Low |
-|--|-----------|------|--------|------------|-----|
-| Points | 4 | 3 | 2 | 1.5 | 1 |
+| | Very High | High | Medium | Low-Medium | Low | Very Low |
+|--|-----------|------|--------|------------|-----|----------|
+| Points | 4 | 3 | 2 | 1.5 | 1 | 0 |
 
 ---
 
@@ -201,10 +201,60 @@ Quick-reference guide for selecting the optimal language. Use this for fast deci
 
 ---
 
+### Python
+
+**Best for:** AI/ML integration, automation and scripting, data pipelines, rapid prototyping, internal backend services, and glue code that ties systems together — anywhere iteration speed and library availability matter more than raw throughput.
+
+**Strengths:**
+- Largest AI/ML ecosystem (PyTorch, TensorFlow, the model-provider SDKs all land here first)
+- Lowest learning curve of the five — fastest from idea to working code
+- Vast general-purpose library ecosystem (PyPI)
+- Excellent data tooling (numpy, pandas, scipy)
+- Strong, typed web frameworks (FastAPI) and rich CLI/automation support
+- Type hints + mypy bring optional static safety where you want it
+- Ubiquitous — largest hiring pool, runs everywhere
+
+**Weaknesses:**
+- Runtime performance is the slowest of the five (interpreted)
+- The GIL serializes CPU-bound threads (parallel CPU work needs multiprocessing)
+- Dynamic typing is a maintainability risk at scale without type-hint discipline
+- No bare-metal / embedded story; requires an interpreter and runtime
+- Startup latency makes it weak for tiny short-lived CLI invocations
+- Packaging/deployment is less clean than a single compiled binary
+
+**Ideal Use Cases:**
+- AI/ML application integration and inference glue
+- Automation, scripting, and orchestration
+- Data pipelines, ETL, and analysis
+- Rapid prototyping and internal tools
+- Backend APIs where iteration speed beats raw throughput (FastAPI/Django)
+- Scientific computing and notebooks
+- ML experimentation and model training
+
+**When NOT to use:**
+- Hard real-time or bare-metal/embedded systems
+- Latency-critical hot paths or high-throughput network services
+- CPU-bound parallel workloads (GIL)
+- Single-binary CLI tools where startup time matters
+
 ## Decision Flowchart (ASCII)
 
 ```
                         START
+                          │
+                          ▼
+                ┌─────────────────┐
+                │ Is it AI/ML      │
+                │ integration,     │
+                │ automation, or a │
+                │ data pipeline?   │
+                └────────┬────────┘
+                   YES   │   NO
+                   ┌─────┘
+                   ▼
+            ┌──────────┐
+            │  Python  │  (when the surrounding system / model SDKs are Python;
+            └──────────┘   use TypeScript instead if it must ship in a web app)
                           │
                           ▼
                 ┌─────────────────┐
@@ -345,11 +395,12 @@ Quick-reference guide for selecting the optimal language. Use this for fast deci
 
 | Scenario | Recommended | Runner-up | Why |
 |----------|-------------|-----------|-----|
-| Data analysis pipeline | Julia | Python* | *Python not in framework |
-| ML model training | Julia | — | Scientific computing focus |
-| ML model serving | TypeScript | Rust | ONNX Runtime, deployment |
-| Statistical modeling | Julia | — | Built-in statistics |
-| Big data ETL | Rust | TypeScript | Memory efficiency, speed |
+| Data analysis pipeline | Python | Julia | pandas/numpy ecosystem, iteration speed |
+| ML model training | Python | Julia | PyTorch/TensorFlow dominate the ecosystem |
+| ML model serving | TypeScript | Python | ONNX Runtime + deployment; Python when SDKs are Python |
+| Statistical modeling | Julia | Python | Built-in statistics; Python (statsmodels) a close second |
+| Big data ETL | Rust | Python | Memory efficiency vs. development speed |
+| AI-glue / automation service | Python | TypeScript | Model SDKs + libraries land in Python first |
 
 ### Embedded & Hardware
 
@@ -438,8 +489,8 @@ Date: [date]
 | Experience | Recommendation |
 |------------|---------------|
 | All senior | Can handle Rust or C++ effectively |
-| Mixed | TypeScript or Julia for faster onboarding |
-| All junior | TypeScript for ecosystem support and hiring |
+| Mixed | TypeScript, Python, or Julia for faster onboarding |
+| All junior | TypeScript or Python for ecosystem support and hiring |
 | Learning-focused | Use the project to learn the highest-scoring language |
 
 ### Project Duration
@@ -466,11 +517,12 @@ Date: [date]
 
 ## Summary: The 60-Second Decision
 
-1. **Web/UI/API?** → TypeScript
-2. **Numerical computing/science?** → Julia
-3. **Hardware/bare metal/extreme performance?** → Rust (if safety matters) or C++ (if team knows it)
-4. **Systems programming/CLI/network?** → Rust
-5. **Unclear?** → Run the full scoring in [QUERY_LOGIC.md](QUERY_LOGIC.md)
-6. **Team/org constraint?** → Override with documented rationale
+1. **AI/ML integration, automation, data pipelines, or glue code?** → Python
+2. **Web/UI/API?** → TypeScript
+3. **Numerical computing/science?** → Julia
+4. **Hardware/bare metal/extreme performance?** → Rust (if safety matters) or C++ (if team knows it)
+5. **Systems programming/CLI/network?** → Rust
+6. **Unclear?** → Run the full scoring in [QUERY_LOGIC.md](QUERY_LOGIC.md)
+7. **Team/org constraint?** → Override with documented rationale
 
 When in doubt, the framework defaults to the language that scores highest on the weighted matrix. The matrix is objective; override decisions are documented and auditable.
