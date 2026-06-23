@@ -96,22 +96,37 @@ The final output includes:
 
 ```
 claude-code-agent-swarm-programming-framework/
-├── README.md                      # This file — overview and quick start
-├── CLAUDE.md                      # Claude Code integration guide
-├── AGENT_SWARM.md                 # Complete agent role definitions (11 agents)
-├── WORKFLOW.md                    # 13-step lifecycle workflow
-├── QUERY_LOGIC.md                 # Query analysis and language selection framework
-├── LANGUAGE_DECISION_MATRIX.md    # Quick-reference language decision matrix
-├── PROMPT_UNIVERSAL.md            # Copy-paste universal prompt for Claude Code
-├── PROMPT_RUST.md                 # Rust-specific prompt override
-├── PROMPT_TYPESCRIPT.md           # TypeScript-specific prompt override
-├── PROMPT_JULIA.md                # Julia-specific prompt override
-├── PROMPT_CPP.md                  # C++-specific prompt override
-└── examples/                      # Example projects generated with this framework
-    ├── rust-cli-tool/
-    ├── typescript-api/
-    ├── julia-data-analysis/
-    └── cpp-concurrent-queue/
+├── LICENSE
+├── README.md                           # This file — overview and quick start
+├── CLAUDE.md                           # Claude Code integration guide
+├── AGENT_SWARM.md                      # Complete agent role definitions (11 agents)
+├── WORKFLOW.md                         # 13-step lifecycle workflow
+├── QUERY_LOGIC.md                      # Query analysis and language selection framework
+├── LANGUAGE_DECISION_MATRIX.md         # Quick-reference language decision matrix
+├── BEST_PRACTICES_RUST.md              # Rust best practices reference
+├── BEST_PRACTICES_TYPESCRIPT.md        # TypeScript best practices reference
+├── BEST_PRACTICES_JULIA.md             # Julia best practices reference
+├── BEST_PRACTICES_CPP.md               # C++ best practices reference
+├── PROMPT_UNIVERSAL.md                 # Copy-paste universal prompt for Claude Code
+├── PROMPT_RUST.md                      # Rust-specific prompt override
+├── PROMPT_TYPESCRIPT.md                # TypeScript-specific prompt override
+├── PROMPT_JULIA.md                     # Julia-specific prompt override
+├── PROMPT_CPP.md                       # C++-specific prompt override
+├── REVIEW_CHECKLIST.md                 # Best practices review checklist
+├── TESTING_CHECKLIST.md                # Testing checklist
+├── SECURITY_CHECKLIST.md               # Security checklist
+├── OPTIMIZATION_CHECKLIST.md           # Optimization checklist
+├── FINAL_OUTPUT_TEMPLATE.md            # Final output delivery template
+├── EXAMPLE_USER_QUERIES.md             # 8 worked example user queries
+└── examples/                           # Placeholder example projects
+    ├── rust/
+    │   └── README.md
+    ├── typescript/
+    │   └── README.md
+    ├── julia/
+    │   └── README.md
+    └── cpp/
+        └── README.md
 ```
 
 ---
@@ -129,6 +144,15 @@ claude-code-agent-swarm-programming-framework/
 | `QUERY_LOGIC.md` | Scoring methodology, weighted decision tables, and worked examples for language selection |
 | `LANGUAGE_DECISION_MATRIX.md` | Quick-lookup matrix, per-language profiles, decision flowchart, and override rules |
 
+### Best Practices References
+
+| File | Purpose |
+|------|---------|
+| `BEST_PRACTICES_RUST.md` | Rust idioms, project setup, required tooling, common mistakes, and a minimal example |
+| `BEST_PRACTICES_TYPESCRIPT.md` | TypeScript config, code style, testing, ESLint/Prettier setup, and a minimal example |
+| `BEST_PRACTICES_JULIA.md` | Julia type stability, multiple dispatch, testing, benchmarking, and a minimal example |
+| `BEST_PRACTICES_CPP.md` | C++ RAII, smart pointers, CMake setup, sanitizer builds, and a minimal example |
+
 ### Prompt Files
 
 | File | Purpose |
@@ -139,11 +163,25 @@ claude-code-agent-swarm-programming-framework/
 | `PROMPT_JULIA.md` | Override/additions when the selected language is Julia |
 | `PROMPT_CPP.md` | Override/additions when the selected language is C++ |
 
+### Checklists and Templates
+
+| File | Purpose |
+|------|---------|
+| `REVIEW_CHECKLIST.md` | Weighted review checklist used by the Best Practices Review Agent |
+| `TESTING_CHECKLIST.md` | Test category requirements, coverage targets, and per-language testing guides |
+| `SECURITY_CHECKLIST.md` | Security risk classification and per-language vulnerability checklist |
+| `OPTIMIZATION_CHECKLIST.md` | Five-tier optimization priority order and anti-patterns to avoid |
+| `FINAL_OUTPUT_TEMPLATE.md` | 14-section delivery template used by the Final Review Agent |
+| `EXAMPLE_USER_QUERIES.md` | 8 worked example goals covering all 4 languages and request types |
+
 ### Examples Directory
 
 | Directory | Purpose |
 |-----------|---------|
-| `examples/` | Sample projects generated using this framework, serving as reference implementations |
+| `examples/rust/` | Placeholder for a future Rust example project |
+| `examples/typescript/` | Placeholder for a future TypeScript example project |
+| `examples/julia/` | Placeholder for a future Julia example project |
+| `examples/cpp/` | Placeholder for a future C++ example project |
 
 ---
 
