@@ -8,7 +8,7 @@ How to use the Agent Swarm Programming Framework with the Claude Code CLI.
 
 - Claude Code installed: `npm install -g @anthropic-ai/claude-code`
 - Authenticated: `claude auth login`
-- Target language toolchain installed (Rust/TypeScript/Julia/C++)
+- Target language toolchain installed (Rust/TypeScript/Julia/C++/Python)
 
 ---
 
@@ -43,6 +43,10 @@ Type your request. Examples:
 
 ```
 "Write a C++17 header-only ring buffer with lock-free SPSC semantics."
+```
+
+```
+"Build a Python service that ingests CSV data, validates it with pydantic, and exposes a FastAPI endpoint with tests."
 ```
 
 ### Step 4: Execute
@@ -117,7 +121,7 @@ When the swarm finishes:
 
 1. **Review the code** — Check the generated files
 2. **Check the score** — Review agent scores (1-10)
-3. **Run tests locally** — `cargo test`, `npm test`, `julia test/runtests.jl`, `make test`
+3. **Run tests locally** — `cargo test`, `npm test`, `julia test/runtests.jl`, `pytest`, `make test`
 4. **Request changes** — If something is wrong, tell Claude Code which agent to re-run
 
 ---
@@ -288,7 +292,7 @@ Mention these if they matter:
 - **Memory limits** ("must run on a 512MB container")
 - **Dependencies** ("no external crates except tokio")
 - **Platform** ("must compile on Windows")
-- **Rust version** / **Node version** / **Julia version** / **C++ standard**
+- **Rust version** / **Node version** / **Julia version** / **C++ standard** / **Python version**
 
 ### Review Agent Scores
 
